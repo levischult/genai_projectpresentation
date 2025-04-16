@@ -24,9 +24,35 @@ While HRGenCast would be limited to the continental US (CONUS), boundary conditi
 - As previously discussed, the poor time resolution of the HRRR training data will hinder the model's ability to learn km-scale convective motions. HRGenCast will likely require a form of downscaling to achieve spatial resolutions appropriate for convective modeling. This downscaling could be through a Generative Adverserial Network (Leinonen et al. 2020) or a diffusion model (Mardani et al. 2025).
 
 ## Model Architecture + Data Used
-### Grid to Mesh Encoder
+For readability, I have made the following notation:
+- n = node
+- e = edge
+- grid = the grid of latitude and longitude cells at 0.25 degree resolution
+- mesh = the multimesh composed of an isocahedron 6 times refined with edges across the previous refinements
+- features = this is the data in feature space (atmospheric variables)
+- embed = this is the data in a latent space (dimension unspecified)
 
-### Processor: Sparse Graph Transformer
+### 1. Grid to Mesh Encoder
+Input:
+- e_g2m_embed
+- n_grid_embed
+- n_mesh_embed
+Output:
+- The above variables updated based on the information passed from the grid to the mesh
+```
+# update grid to mesh edges based on adjacent node info with an MLP
+1. e_g2m_e_prime = MLP5(e_g2m_embed, n_grid_embed, n_mesh_embed)
+# mesh node updated by combining info from all edges arriving at node via MLP
+2. n_mesh_e_prime = MLP6(n_mesh_embed, SUM:e_g2m_e_prime)
+# grid nodes are also updated
+3. n_grid_e_prime = MLP7(n_grid_embed)
+# Reassigning + cleaning up
+4. n_grid_embed = n_grid_embed + n_grid_e_prime
+5. n_mesh_embed = n_mesh_embed + n_mesh_e_prime
+6. e_g2m_embed = e_g2m_embed + e_g2m_e_prime
+```
+
+### 2. Processor: Sparse Graph Transformer
 hyperparameters:
 - feature_length = 512 -- this is d_attn in formal algorithms
 - khop=32 -- This is the size of the neighborhood of nodes the node in question will attend to
@@ -55,19 +81,22 @@ for b in n_mhablocks:
   n_mesh_embed_0 = n_mesh_embed_0_prime
 ```
 
-### Mesh to Grid Decoder
+### 3. Mesh to Grid Decoder
+- This is roughly equivalent to the Encoder, but instead using `e_m2g_embed` to move information unidirectionally from the mesh back to the grid.
+- Importantly, with the diffusion architecture, we are actually predicting the residual difference of the next atmospheric state from the current one.
+
 ![image](images/sparsetrans.png)
 
-### Conditional Diffusion Model
+### 4. Conditional Diffusion Model
+- For details, see section D.3 of the arXiv version of the GenCast paper.
+- This step essentially uses the predictions from the Encoder-Processor-Decoder architecture + noise of a known level to progressively denoise into a finely detailed set of residuals that are used to propagate the current weather state into the next.
+- Note for GenCast: the number of steps for the diffusion model N=20
 
 ![image](images/diffusionimg.png)
 
-### Downscaling Method
+### 5. Downscaling Method
 ![image](images/downscaling_leinonen.png)
-
-
-## Implementation
-- pseudocode
+- This step is needed to achieve km-scale forecasting despite the training data being temporally limited. 
 
 ## Evaluation
 
