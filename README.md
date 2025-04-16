@@ -6,7 +6,9 @@ Machine Learning Weather Prediction (MLWP) has emerged as a promising alternativ
 This project aims to improve the spatial resolution of GenCast down to kilometer scales and the temporal resolution to hourly. This cannot be done with the ERA5 dataset used to train the original GenCast model, so we would turn to the High-Resolution Rapid Refresh (HRRR) forecasting system. HRRR is a 3-km spatial resolution NWP model that incorporates radar data every 15 minutes and utilizes hourly data assimilation from the Rapid Refresh (13km) forecast model. By including these radar-enhanced weather prediction models, HRGenCast would have the capabilities to predict precipitation levels within convective systems such as thunderstorms. Since the HRRR model is restricted to the United States, HRGenCast would be limited in its geographic range. The model could potentially be applied to other geographic regions with further fine-tuning however. 
 
 ## Methodology
-
+While HRGenCast would be limited to the continental US, boundary conditions would be supplied via the Rapid Refresh model. We would use the archival HRRRv3 dataset 
+3 km grid gives 1905141 points for HRRRv4
+~25 grid points per mesh node in GenCast == 76k
 
 ## Model Architecture + Data Used
 
@@ -20,3 +22,10 @@ This project aims to improve the spatial resolution of GenCast down to kilometer
 - next steps - generative data assimilation
 
 ## Resources/Citations
+- gencast
+- HRRR
+- HRRRv4
+- Rapid Refresh
+- state estimation/ SDA
+- MLWP in observation space
+- km scale StormCast
