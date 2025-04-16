@@ -33,6 +33,8 @@ For readability, I have made the following notation:
 - features = this is the data in feature space (atmospheric variables)
 - embed = this is the data in a latent space (dimension unspecified)
 
+![image](images/sparsetrans.png)
+
 ### 1. Grid to Mesh Encoder
 Input:
 - e_g2m_embed
