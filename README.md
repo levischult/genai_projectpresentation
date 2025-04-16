@@ -12,13 +12,14 @@ This project aims to improve the spatial resolution of GenCast down to kilometer
 
 ## Methodology
 The training and evaluation data for HRGenCast would come from NOAA's HRRR forecast system. 
-HRRR is a 3-km spatial resolution NWP model that incorporates radar data every 15 minutes and utilizes hourly data assimilation from the Rapid Refresh (13km) forecast model. While HRRR is an hourly forecast and will likely hinder the spatial resolution for convective dynamics in HRGenCast, it is the only option for a vetted, fine spatiotemporal resolution forecast model. 
-  By including these radar-enhanced weather prediction models, HRGenCast would have the capabilities to predict precipitation levels within convective systems such as thunderstorms. Since the HRRR model is restricted to the United States, HRGenCast would be limited in its geographic range. The model could potentially be applied to other geographic regions with further fine-tuning however. 
+HRRR is a 3-km spatial resolution NWP model that incorporates radar data every 15 minutes and utilizes hourly data assimilation from the Rapid Refresh (13km) forecast model. While HRRR is an hourly forecast and will likely hinder the spatial resolution for convective dynamics in HRGenCast, it is the only option for a vetted, fine spatiotemporal resolution forecast model. Approaches for approximating convective dynamics will be discussed further below. By including these radar-enhanced weather prediction models, HRGenCast would have the capabilities to predict precipitation levels within convective systems such as thunderstorms. Since the HRRR model is restricted to the United States, HRGenCast would be limited in its geographic range. The model could potentially be applied to other geographic regions with further fine-tuning however. 
 
 
 While HRGenCast would be limited to the continental US (CONUS), boundary conditions would be supplied via the Rapid Refresh model. We would initially begin by focusing on a small region of CONUS, such as Tennessee, to explore capabilities and difficulties in an easier testbed. Once desired performance was reached, we would expand to CONUS with the design considerations informed by the regional model. Some of these design attributes that need investigation before a full CONUS model are the following:
 - The original GenCast model had approximately 25 grid points per mesh node. To achieve this same coverage over CONUS (HRRRv4: 1799 x 1059 = 1905141 points), we would need approximately 76000 mesh nodes. Compared to the 41k mesh nodes in the original GenCast this is a nearly factor of two increase. It is not guaranteed, however, that the level of resolution for 30km forecasting is adequate for kilometer scale processes.
-- GenCast's sparse graph transformer defined a neighborhood for each mesh node's self attention through a 32-khop radius. The coarse resolution of GenCast 
+- GenCast's sparse graph transformer defined a neighborhood for each mesh node's self attention through a 32-khop radius. GenCast's coarse resolution and focus on synoptic scale weather patterns demanded this neighborhood size. The increased resolution and difference in atmospheric dynamics may require a different neighborhood size for accurate prediction without egregious computational cost.
+- Other transformer architecture elements will likely need adjusting, especially for managing computational load. GenCast used 16 consecutive multihead attention blocks, each with four heads and an embedding space dimensionality of 512. Whether this is enough for a model to account for a convective atmosphere remains to be seen.
+- As previously discussed, the poor time resolution of the HRRR training data will hinder the model's ability to learn km-scale convective motions. HRGenCast will likely require a form of downscaling to achieve spatial resolutions appropriate for convective modeling. This downscaling could be through a Generative Adverserial Network (Leinonen et al. 2020) or a diffusion model (Mardani et al. 2025).
 
 ## Model Architecture + Data Used
 
@@ -32,10 +33,13 @@ While HRGenCast would be limited to the continental US (CONUS), boundary conditi
 - next steps - generative data assimilation
 
 ## Resources/Citations
-- gencast
-- HRRR
-- HRRRv4
-- Rapid Refresh
-- state estimation/ SDA
-- MLWP in observation space
-- km scale StormCast
+- Price, I., Sanchez-Gonzalez, A., Alet, F., Andersson, T. R., El-Kadi, A., Masters, D., ... & Willson, M. (2023). Gencast: Diffusion-based ensemble forecasting for medium-range weather. arXiv preprint arXiv:2312.15796.
+-  Dowell, D. C., Alexander, C. R., James, E. P., Weygandt, S. S., Benjamin, S. G., Manikin, G. S., Blake, B. T., Brown, J. M., Olson, J. B., Hu, M., Smirnova, T. G., Ladwig, T., Kenyon, J. S., Ahmadov, R., Turner, D. D., Duda, J. D., & Alcott, T. I. (2022). The High-Resolution Rapid Refresh (HRRR): An Hourly Updating Convection-Allowing Forecast Model. Part I: Motivation and System Description. Weather and Forecasting, 37(8), 1371-1395. https://doi.org/10.1175/WAF-D-21-0151.1
+-  [HRRR](https://rapidrefresh.noaa.gov/hrrr/)
+- [HRRRDAS](https://rapidrefresh.noaa.gov/internal/pdfs/2020_Spring_Experiment_HRRRE_Documentation.pdf)
+- [Rapid Refresh Model](https://rapidrefresh.noaa.gov/)
+- Manshausen, P., Cohen, Y., Harrington, P., Pathak, J., Pritchard, M., Garg, P., ... & Brenowitz, N. (2024). Generative data assimilation of sparse weather station observations at kilometer scales. arXiv preprint arXiv:2406.16947.
+- McNally, A., Lessig, C., Lean, P., Boucher, E., Alexe, M., Pinnington, E., ... & Healy, S. (2024). Data driven weather forecasts trained and initialised directly from observations. arXiv preprint arXiv:2407.15586.
+- Pathak, J., Cohen, Y., Garg, P., Harrington, P., Brenowitz, N., Durran, D., ... & Pritchard, M. (2024). Kilometer-scale convection allowing model emulation using generative diffusion modeling. arXiv preprint arXiv:2408.10958.
+- Mardani, M., Brenowitz, N., Cohen, Y., Pathak, J., Chen, C. Y., Liu, C. C., ... & Pritchard, M. (2025). Residual corrective diffusion modeling for km-scale atmospheric downscaling. Communications Earth & Environment, 6(1), 124.
+- Leinonen, J., Nerini, D., & Berne, A. (2020). Stochastic super-resolution for downscaling time-evolving atmospheric fields with a generative adversarial network. IEEE Transactions on Geoscience and Remote Sensing, 59(9), 7211-7223.
