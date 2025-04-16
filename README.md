@@ -24,17 +24,45 @@ While HRGenCast would be limited to the continental US (CONUS), boundary conditi
 - As previously discussed, the poor time resolution of the HRRR training data will hinder the model's ability to learn km-scale convective motions. HRGenCast will likely require a form of downscaling to achieve spatial resolutions appropriate for convective modeling. This downscaling could be through a Generative Adverserial Network (Leinonen et al. 2020) or a diffusion model (Mardani et al. 2025).
 
 ## Model Architecture + Data Used
-Grid to Mesh Encoder
+### Grid to Mesh Encoder
 
-Sparse Graph Transformer
+### Processor: Sparse Graph Transformer
+hyperparameters:
+- feature_length = 512 -- this is d_attn in formal algorithms
+- khop=32 -- This is the size of the neighborhood of nodes the node in question will attend to
+- nheads=4 -- how many self-attention heads would you like in each MHA block?
+- n_mhablocks=16 -- how many consecutive MHA blocks would you like?
 
+```
+# For demonstration we select one node
+n_mesh_embed_0 = n_mesh_embed[0]
+
+# find neighbors for each mesh node to attend to. We do this by finding all nodes
+# within khop distance (along e_mesh_embed) from the selected node (n_mesh_embed_0)
+# we also add the selected node to the neighborhood so it can attend to itself.
+n_mesh_neighborhood = nodes_within(khop*e_mesh_embed(n_mesh_embed_0))
+n_mesh_neighborhood += n_mesh_embed_0
+
+# perform mha for each mesh node on itself and its neighborhood
+# note: the below triple for loop is only for demonstration - it is parallelized in GenCast
+# Note here we take advantage of the notation in Formal Algorithms for Transformers
+for b in n_mhablocks:
+  for h in nheads:
+    for neighbor in n_mesh_neighborhood:
+      Y^h = Attention(n_mesh_embed_0, neighbor)
+  Y = [Y_neighbor^h...]
+  n_mesh_embed_0_prime = W_0 Y + b_0 I^T
+  n_mesh_embed_0 = n_mesh_embed_0_prime
+```
+
+### Mesh to Grid Decoder
 ![image](images/sparsetrans.png)
-Mesh to Grid Decoder
 
-Conditional Diffusion Model
+### Conditional Diffusion Model
 
 ![image](images/diffusionimg.png)
-Downscaling Method
+
+### Downscaling Method
 ![image](images/downscaling_leinonen.png)
 
 
