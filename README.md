@@ -90,15 +90,18 @@ for b in n_mhablocks:
 ### 4. Conditional Diffusion Model
 - For details, see section D.3 of the arXiv version of the GenCast paper.
 - This step essentially uses the predictions from the Encoder-Processor-Decoder architecture + noise of a known level to progressively denoise into a finely detailed set of residuals that are used to propagate the current weather state into the next.
-- Note for GenCast: the number of steps for the diffusion model N=20
+- For GenCast, the number of steps for the diffusion model is 20. This may be another hyperparameter to tune for HRGenCast.
 
 ![image](images/diffusionimg.png)
 
 ### 5. Downscaling Method
 ![image](images/downscaling_leinonen.png)
-- This step is needed to achieve km-scale forecasting despite the training data being temporally limited. 
+- This step is needed to achieve km-scale forecasting despite the training data being temporally limited.
+- This can be achieved via a Generative Adversarial Network (Shown above from Leinonen et al 2020) or another diffusion model. A diffusion model may be preferred for their stability in training and ease of ensemble forecasting (See Hatanaka et al. 2023, Addison et al. 2022, Mardani et al 2025). 
 
 ## Evaluation
+- To evaluate the effectiveness of the model, we would follow the methods of Pathak et al. 2024. HRGenCast predictions would be compared to those of the HRRR model. The HRRR has convective physics included, giving us an avenue to assess the model's learnt convective abilities. Radar 
+
 
 ## Critical Analysis
 - possible problems/challenges
@@ -111,6 +114,8 @@ for b in n_mhablocks:
 - [HRRRDAS](https://rapidrefresh.noaa.gov/internal/pdfs/2020_Spring_Experiment_HRRRE_Documentation.pdf)
 - [Rapid Refresh Model](https://rapidrefresh.noaa.gov/)
 - Manshausen, P., Cohen, Y., Harrington, P., Pathak, J., Pritchard, M., Garg, P., ... & Brenowitz, N. (2024). Generative data assimilation of sparse weather station observations at kilometer scales. arXiv preprint arXiv:2406.16947.
+- Addison, H., Kendon, E., Ravuri, S., Aitchison, L., & Watson, P. A. (2022). Machine learning emulation of a local-scale UK climate model. arXiv preprint arXiv:2211.16116.
+- Hatanaka, Y., Glaser, Y., Galgon, G., Torri, G., & Sadowski, P. (2023). Diffusion models for high-resolution solar forecasts. arXiv preprint arXiv:2302.00170.
 - McNally, A., Lessig, C., Lean, P., Boucher, E., Alexe, M., Pinnington, E., ... & Healy, S. (2024). Data driven weather forecasts trained and initialised directly from observations. arXiv preprint arXiv:2407.15586.
 - Pathak, J., Cohen, Y., Garg, P., Harrington, P., Brenowitz, N., Durran, D., ... & Pritchard, M. (2024). Kilometer-scale convection allowing model emulation using generative diffusion modeling. arXiv preprint arXiv:2408.10958.
 - Mardani, M., Brenowitz, N., Cohen, Y., Pathak, J., Chen, C. Y., Liu, C. C., ... & Pritchard, M. (2025). Residual corrective diffusion modeling for km-scale atmospheric downscaling. Communications Earth & Environment, 6(1), 124.
