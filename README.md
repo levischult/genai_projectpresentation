@@ -25,12 +25,17 @@ While HRGenCast would be limited to the continental US (CONUS), boundary conditi
 
 ## Model Architecture + Data Used
 Grid to Mesh Encoder
+
 Sparse Graph Transformer
+
 ![image](images/sparsetrans.png)
 Mesh to Grid Decoder
+
 Conditional Diffusion Model
+
 ![image](images/diffusionimg.png)
 Downscaling Method
+![image](images/downscaling_leinonen.png)
 
 
 ## Implementation
