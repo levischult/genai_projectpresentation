@@ -10,6 +10,8 @@ This project aims to improve the spatial resolution of GenCast down to kilometer
 
 2. Existing high-resolution weather forecasts are at hourly temporal cadence. This limits the training HRGenCast can receive, as only 10-20km scale dynamics are predictable with hourly resolution. In short, realistic km-scale convective activities will not be captured by any model trained with this level of temporal resolution.
 
+![image](images/conv_rad_cond-NWS-5726a3205f9b589e34f99dcd-1149086300.png)
+
 ## Methodology
 The training and evaluation data for HRGenCast would come from NOAA's HRRR forecast system. 
 HRRR is a 3-km spatial resolution NWP model that incorporates radar data every 15 minutes and utilizes hourly data assimilation from the Rapid Refresh (13km) forecast model. While HRRR is an hourly forecast and will likely hinder the spatial resolution for convective dynamics in HRGenCast, it is the only option for a vetted, fine spatiotemporal resolution forecast model. Approaches for approximating convective dynamics will be discussed further below. By including these radar-enhanced weather prediction models, HRGenCast would have the capabilities to predict precipitation levels within convective systems such as thunderstorms. Since the HRRR model is restricted to the United States, HRGenCast would be limited in its geographic range. The model could potentially be applied to other geographic regions with further fine-tuning however. 
