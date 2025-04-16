@@ -24,6 +24,14 @@ While HRGenCast would be limited to the continental US (CONUS), boundary conditi
 - As previously discussed, the poor time resolution of the HRRR training data will hinder the model's ability to learn km-scale convective motions. HRGenCast will likely require a form of downscaling to achieve spatial resolutions appropriate for convective modeling. This downscaling could be through a Generative Adverserial Network (Leinonen et al. 2020) or a diffusion model (Mardani et al. 2025).
 
 ## Model Architecture + Data Used
+Grid to Mesh Encoder
+Sparse Graph Transformer
+![image](images/sparsetrans.png)
+Mesh to Grid Decoder
+Conditional Diffusion Model
+![image](images/diffusionimg.png)
+Downscaling Method
+
 
 ## Implementation
 - pseudocode
