@@ -100,12 +100,13 @@ for b in n_mhablocks:
 - This can be achieved via a Generative Adversarial Network (Shown above from Leinonen et al 2020) or another diffusion model. A diffusion model may be preferred for their stability in training and ease of ensemble forecasting (See Hatanaka et al. 2023, Addison et al. 2022, Mardani et al 2025). 
 
 ## Evaluation
-- To evaluate the effectiveness of the model, we would follow the methods of Pathak et al. 2024. HRGenCast predictions would be compared to those of the HRRR model. The HRRR has convective physics included, giving us an avenue to assess the model's learnt convective abilities. Radar 
-
+- To evaluate the effectiveness of the model, we would follow the methods of Pathak et al. 2024. HRGenCast predictions would be compared to those of the HRRR model. The HRRR has convective physics included, giving us an avenue to assess the model's learnt convective abilities.
+- Statistics such as the Fractions Skill Score will be used to compare the radar forecasts with Multi-Radar Multi Sensor rather than RMSE to not penalize the model for having correct precipitation amounts slightly off location. For ensemble comparisons, we would use the Probability Matched Mean.
 
 ## Critical Analysis
-- possible problems/challenges
-- next steps - generative data assimilation
+- Generative data assimilation could be a method around the main problems identified earlier: poor temporal resolution in training data and difficulties in modeling convective physics/3D turbulence (Manshausen et al. 2024).
+- Combining generative data assimilation with forecasting capabilities has been shown to be possible, combining state estimation and forecasting while remaining in observation space (McNally et al. 2024).
+- If any of these approaches succeed in accurate forecasts of km-scale atmospheric physics, the impacts are tremendous. Improved forecasting and early warning system would improve safety precautions, saving lives.
 
 ## Resources/Citations
 - Price, I., Sanchez-Gonzalez, A., Alet, F., Andersson, T. R., El-Kadi, A., Masters, D., ... & Willson, M. (2023). Gencast: Diffusion-based ensemble forecasting for medium-range weather. arXiv preprint arXiv:2312.15796.
@@ -120,3 +121,4 @@ for b in n_mhablocks:
 - Pathak, J., Cohen, Y., Garg, P., Harrington, P., Brenowitz, N., Durran, D., ... & Pritchard, M. (2024). Kilometer-scale convection allowing model emulation using generative diffusion modeling. arXiv preprint arXiv:2408.10958.
 - Mardani, M., Brenowitz, N., Cohen, Y., Pathak, J., Chen, C. Y., Liu, C. C., ... & Pritchard, M. (2025). Residual corrective diffusion modeling for km-scale atmospheric downscaling. Communications Earth & Environment, 6(1), 124.
 - Leinonen, J., Nerini, D., & Berne, A. (2020). Stochastic super-resolution for downscaling time-evolving atmospheric fields with a generative adversarial network. IEEE Transactions on Geoscience and Remote Sensing, 59(9), 7211-7223.
+-  Zhang, J., Howard, K., Langston, C., Kaney, B., Qi, Y., Tang, L., Grams, H., Wang, Y., Cocks, S., Martinaitis, S., Arthur, A., Cooper, K., Brogden, J., & Kitzmiller, D. (2016). Multi-Radar Multi-Sensor (MRMS) Quantitative Precipitation Estimation: Initial Operating Capabilities. Bulletin of the American Meteorological Society, 97(4), 621-638. https://doi.org/10.1175/BAMS-D-14-00174.1 
